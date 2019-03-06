@@ -15,9 +15,9 @@ public class Main {
         }
     }
 
-    static boolean isValid(int x, int y, int length){
+    static boolean isValid(int x, int y, int length, int [][] board){
 
-        if(( x < length && y < length) && (x >= 0 && y >= 0))
+        if(( x < length && y < length) && (x >= 0 && y >= 0) && isEmpty(board, x, y))
             return true;
         else return false;
     }
@@ -32,22 +32,10 @@ public class Main {
 
         int num = 0;
 
-        if(isValid(x-2,y+1, length) && isEmpty(board, x-2, y+1))
-            num++;
-        if(isValid(x-2,y-1, length) && isEmpty(board, x-2, y-1))
-            num++;
-        if(isValid(x-1,y+2, length) && isEmpty(board, x-1, y+2))
-            num++;
-        if(isValid(x-1,y-2, length) && isEmpty(board, x-1, y-2))
-            num++;
-        if(isValid(x+2,y+1, length) && isEmpty(board, x+2, y+1))
-            num++;
-        if(isValid(x+2,y-1, length) && isEmpty(board, x+2, y-1))
-            num++;
-        if(isValid(x+1,y+2, length) && isEmpty(board, x+1, y+2))
-            num++;
-        if(isValid(x+1,y-2, length) && isEmpty(board, x+1, y-2))
-            num++;
+        for(HopCoordinates h : HopCoordinates.values()) {
+            if (isValid(x + h.x(), y + h.y(), length, board))
+                num++;
+        }
 
         return num;
     }
@@ -60,68 +48,14 @@ public class Main {
         int x = xx;
         int y = yy;
 
-        if(isValid(x-2,y+1, length) && isEmpty(board, x-2, y+1)) {
-            n = getNumber(x - 2, y + 1, board, length);
-            if (n < min) {
-                min = n;
-                nextX[0] = x - 2;
-                nextX[1] = y + 1;
-            }
-        }
-        if(isValid(x-2,y-1, length) && isEmpty(board, x-2, y-1)) {
-            n = getNumber(x - 2, y - 1, board, length);
-            if (n < min) {
-                min = n;
-                nextX[0] = x - 2;
-                nextX[1] = y - 1;
-            }
-        }
-        if(isValid(x-1,y+2, length) && isEmpty(board, x-1, y+2)) {
-            n = getNumber(x - 1, y + 2, board, length);
-            if (n < min) {
-                min = n;
-                nextX[0] = x - 1;
-                nextX[1] = y + 2;
-            }
-        }
-        if(isValid(x-1,y-2, length) && isEmpty(board, x-1, y-2)) {
-            n = getNumber(x - 1, y - 2, board, length);
-            if (n < min) {
-                min = n;
-                nextX[0] = x - 1;
-                nextX[1] = y - 2;
-            }
-        }
-        if(isValid(x+2,y+1, length) && isEmpty(board, x+2, y+1)) {
-            n = getNumber(x + 2, y + 1, board, length);
-            if (n < min) {
-                min = n;
-                nextX[0] = x + 2;
-                nextX[1] = y + 1;
-            }
-        }
-        if(isValid(x+2,y-1, length) && isEmpty(board, x+2, y-1)) {
-            n = getNumber(x + 2, y - 1, board, length);
-            if (n < min) {
-                min = n;
-                nextX[0] = x + 2;
-                nextX[1] = y - 1;
-            }
-        }
-        if(isValid(x+1,y+2, length) && isEmpty(board, x+1, y+2)) {
-            n = getNumber(x + 1, y + 2, board, length);
-            if (n < min) {
-                min = n;
-                nextX[0] = x + 1;
-                nextX[1] = y + 2;
-            }
-        }
-        if(isValid(x+1,y-2, length) && isEmpty(board, x+1, y-2)) {
-            n = getNumber(x + 1, y - 2, board, length);
-            if (n < min) {
-                min = n;
-                nextX[0] = x + 1;
-                nextX[1] = y - 2;
+        for(HopCoordinates h : HopCoordinates.values()){
+            if(isValid(x + h.x(),y + h.y(), length, board)) {
+                n = getNumber(x + h.x(), y + h.y(), board, length);
+                if (n < min) {
+                    min = n;
+                    nextX[0] = x + h.x();
+                    nextX[1] = y + h.y();
+                }
             }
         }
 
