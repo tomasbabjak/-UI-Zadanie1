@@ -1,5 +1,6 @@
 package pack;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -77,23 +78,27 @@ public class Main {
         s = new Scanner(System.in);
         int i = s.nextInt();
 
+        Random rand = new Random();
+        int randomX = rand.nextInt(i);
+        int randomY = rand.nextInt(i);
+
         int board[][] = new int[i][i];
 
         newBoard(board,i);
 
-        board[0][0] = 1;
-        next[0] = 0;
-        next[1] = 0;
+        board[randomY][randomX] = 1;
+        next[0] = randomX;
+        next[1] = randomY;
 
         while(Warnsdorff(next, board, i, next[1], next[0])){
             board[next[1]][next[0]] = ++counter;
-            for(int j = 0; j < i; j++){
+/*            for(int j = 0; j < i; j++){
                 for(int k = 0; k < i; k++){
                     System.out.print(board[j][k] + " ");
                 }
                 System.out.println();
-            }
-            System.out.println();
+            }*//*
+            System.out.println();*/
         }
 
         for(int j = 0; j < i; j++){
