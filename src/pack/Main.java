@@ -17,7 +17,7 @@ public class Main {
 
     static boolean isValid(int x, int y, int length){
 
-        if(( x <= length && y <= length) && (x > 0 && y > 0))
+        if(( x < length && y < length) && (x >= 0 && y >= 0))
             return true;
         else return false;
     }
