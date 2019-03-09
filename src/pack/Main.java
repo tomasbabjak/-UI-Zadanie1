@@ -46,6 +46,7 @@ public class Main {
         int min = N+1;
         int n;
         int i = 0;
+        int help;
 
         int x = xx;
         int y = yy;
@@ -53,31 +54,58 @@ public class Main {
         for(HopCoordinates h : HopCoordinates.values()){
             if(isValid(x + h.x(),y + h.y(), length, board)) {
                 n = getNumber(x + h.x(), y + h.y(), board, length);
-                table[length*yy+xx][i++] = length*(y + h.y())+x + h.x();
                 if (n < min) {
+                    help = table[length*yy+xx][0];
+                    table[length*yy+xx][0] = length*(y + h.y()) + x + h.x();
+                    table[length*yy+xx][++i] = help;
                     min = n;
                     nextX[0] = x + h.x();
                     nextX[1] = y + h.y();
                 }
+                else {
+                    table[length * yy + xx][i++] = length * (y + h.y()) + x + h.x();
+                }
             }
         }
 
-        if(counter == length*length) {
-            board[nextX[1]][nextX[0]] = counter;
-            return true;
+        if (min == N + 1) return false;
+
+        while(table[length*yy+xx][0] != -1) {
+
+            int yTable = table[length*yy+xx][0] / length;
+            int xTable = table[length*yy+xx][0] % length;
+
+            if (counter == length * length) {
+                board[yTable][xTable] = counter;
+                return true;
+            }
+
+            board[yTable][xTable] = counter;
+
+            if (Warnsdorff(nextX, board, length, yTable, xTable, counter + 1, table))
+                return true;
+            else {
+                removeHead(table, length, yy, xx);
+                board[yTable][xTable] = -1;
+            }
         }
 
-        if(min == N+1) return false;
-
-        board[nextX[1]][nextX[0]] = counter;
-
-        if(Warnsdorff(nextX, board, length, nextX[1], nextX[0], counter+1, table))
-            return true;
-        else {
-            board[nextX[1]][nextX[0]] = -1;
+        for(int j = 0; j < length; j++){
+            for(int k = 0; k < length; k++){
+                System.out.print(board[j][k] + " ");
+            }
+            System.out.println();
         }
+        System.out.println();
 
         return false;
+    }
+
+    static void removeHead(int [][] table, int length, int yy, int xx){
+        for(int i = 0; i < 7; i++){
+            table[length*yy+xx][i] = table[length*yy+xx][i+1];
+        }
+        table[length*yy+xx][7] = -1;
     }
 
     static void findRoute(int i) throws Exception{
@@ -120,13 +148,13 @@ public class Main {
 
     public static void main(String[] args) throws Exception{
 
-        System.out.print("Zadaj dlzku hrany\n");
+       /* System.out.print("Zadaj dlzku hrany\n");
         Scanner s;
         s = new Scanner(System.in);
         int in = s.nextInt();
-
-        for(int i = 0; i < 20; i++) {
-            findRoute(in);
+*/
+        for(int i = 0; i < 1; i++) {
+            findRoute(8);
         }
     }
 }
