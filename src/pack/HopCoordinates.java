@@ -19,10 +19,12 @@ public enum HopCoordinates {
     }
 
     public int x() {
+
         return x;
     }
 
     public int y() {
+
         return y;
     }
 }

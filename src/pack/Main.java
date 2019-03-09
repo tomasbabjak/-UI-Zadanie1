@@ -41,10 +41,11 @@ public class Main {
         return num;
     }
 
-    static boolean Warnsdorff(int nextX[], int [][] board, int length, int yy, int xx){
+    static boolean Warnsdorff(int nextX[], int [][] board, int length, int yy, int xx, int counter, int [][] table){
 
         int min = N+1;
         int n;
+        int i = 0;
 
         int x = xx;
         int y = yy;
@@ -52,6 +53,7 @@ public class Main {
         for(HopCoordinates h : HopCoordinates.values()){
             if(isValid(x + h.x(),y + h.y(), length, board)) {
                 n = getNumber(x + h.x(), y + h.y(), board, length);
+                table[length*yy+xx][i++] = length*(y + h.y())+x + h.x();
                 if (n < min) {
                     min = n;
                     nextX[0] = x + h.x();
@@ -60,23 +62,29 @@ public class Main {
             }
         }
 
-        if(min != N+1)
+        if(counter == length*length) {
+            board[nextX[1]][nextX[0]] = counter;
             return true;
-        else
-            return false;
+        }
 
+        if(min == N+1) return false;
+
+        board[nextX[1]][nextX[0]] = counter;
+
+        if(Warnsdorff(nextX, board, length, nextX[1], nextX[0], counter+1, table))
+            return true;
+        else {
+            board[nextX[1]][nextX[0]] = -1;
+        }
+
+        return false;
     }
 
-    static boolean findRoute() throws Exception{
+    static void findRoute(int i) throws Exception{
 
         int number = 0;
-        int next[] = new int[2];
         int counter = 1;
-
-        System.out.print("Zadaj dlzku hrany\n");
-        Scanner s;
-        s = new Scanner(System.in);
-        int i = s.nextInt();
+        int next[] = new int[2];
 
         Random rand = new Random();
         int randomX = rand.nextInt(i);
@@ -90,16 +98,13 @@ public class Main {
         next[0] = randomX;
         next[1] = randomY;
 
-        while(Warnsdorff(next, board, i, next[1], next[0])){
-            board[next[1]][next[0]] = ++counter;
-/*            for(int j = 0; j < i; j++){
-                for(int k = 0; k < i; k++){
-                    System.out.print(board[j][k] + " ");
-                }
-                System.out.println();
-            }*//*
-            System.out.println();*/
+        int table[][] = new int [i*i][8];
+        for(int j = 0; j < i*i; j++){
+            for(int k = 0; k < 8; k++)
+                table[j][k] = -1;
         }
+
+        Warnsdorff(next, board, i, next[1], next[0], counter+1, table);
 
         for(int j = 0; j < i; j++){
             for(int k = 0; k < i; k++){
@@ -107,12 +112,21 @@ public class Main {
             }
             System.out.println();
         }
+        System.out.println();
 
-        if(counter == i*i) return true;
-        else return false;
+      /*  if(counter == i*i) return true;
+        else return false;*/
     }
 
     public static void main(String[] args) throws Exception{
-        findRoute();
+
+        System.out.print("Zadaj dlzku hrany\n");
+        Scanner s;
+        s = new Scanner(System.in);
+        int in = s.nextInt();
+
+        for(int i = 0; i < 20; i++) {
+            findRoute(in);
+        }
     }
 }
