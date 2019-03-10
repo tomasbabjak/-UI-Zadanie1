@@ -45,27 +45,41 @@ public class Main {
 
         int min = N+1;
         int n;
-        int i = 0;
-        int help;
-
+        int i = 0, iter = 0;
+        int tab[][] = new int[8][2];
         int x = xx;
         int y = yy;
 
-        for(HopCoordinates h : HopCoordinates.values()){
-            if(isValid(x + h.x(),y + h.y(), length, board)) {
+        for(int j = 0; j < 8; j++) {
+            tab[j][0] = -1;
+            tab[j][1] = -1;
+        }
+
+        for(HopCoordinates h : HopCoordinates.values()) {
+            if (isValid(x + h.x(), y + h.y(), length, board)) {
                 n = getNumber(x + h.x(), y + h.y(), board, length);
-                if (n < min) {
-                    help = table[length*yy+xx][0];
-                    table[length*yy+xx][0] = length*(y + h.y()) + x + h.x();
-                    table[length*yy+xx][++i] = help;
-                    min = n;
-                    nextX[0] = x + h.x();
-                    nextX[1] = y + h.y();
-                }
-                else {
-                    table[length * yy + xx][i++] = length * (y + h.y()) + x + h.x();
+                tab[iter][0] = n;
+                tab[iter][1] = length*(y + h.y()) + x + h.x();
+                iter++;
+                if(min > n) min = n;
+            }
+        }
+
+        for(int j = 0; j < iter; j++){
+            for(int k = 0; k < iter; k++){
+                if(tab[j][0] < tab[k][0] || tab[k][0] == -1) {
+                    int temp = tab[k][0];
+                    tab[k][0] = tab[j][0];
+                    tab[j][0] = temp;
+                    temp = tab[k][1];
+                    tab[k][1] = tab[j][1];
+                    tab[j][1] = temp;
                 }
             }
+        }
+
+        for(int j = 0; j < 8; j++) {
+            table[length * yy + xx][j] = tab[j][1];
         }
 
         if (min == N + 1) return false;
@@ -154,7 +168,7 @@ public class Main {
         int in = s.nextInt();
 */
         for(int i = 0; i < 1; i++) {
-            findRoute(8);
+            findRoute(5);
         }
     }
 }
