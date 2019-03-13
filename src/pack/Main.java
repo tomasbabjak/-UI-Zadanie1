@@ -1,39 +1,36 @@
 package pack;
 
 import java.util.Random;
-import java.util.Scanner;
 
 public class Main {
 
     private static final int N = 8;
+    public static int C = 2;
 
-    static void newBoard(int [][] board, int length){
-
-        for(int i = 0; i < length; i++){
-            for(int j = 0; j < length; j++){
+    static void newBoard(int[][] board, int a, int b) {
+        for (int i = 0; i < a; i++) {
+            for (int j = 0; j < b; j++) {
                 board[i][j] = -1;
             }
         }
     }
 
-    static boolean isValid(int x, int y, int length, int [][] board){
-
-        if(( x < length && y < length) && (x >= 0 && y >= 0) && isEmpty(board, x, y))
+    static boolean isValid(int x, int y, int length, int[][] board) {
+        if ((x < length && y < length) && (x >= 0 && y >= 0) && isEmpty(board, x, y))
             return true;
         else return false;
     }
 
-    static boolean isEmpty(int [][] board, int x, int y){
-
-        if(board[y][x] > -1) return false;
+    static boolean isEmpty(int[][] board, int x, int y) {
+        if (board[y][x] > -1) return false;
         else return true;
     }
 
-    static int getNumber(int x, int y, int [][] board, int length){
+    static int getNumber(int x, int y, int[][] board, int length) {
 
         int num = 0;
 
-        for(HopCoordinates h : HopCoordinates.values()) {
+        for (HopCoordinates h : HopCoordinates.values()) {
             if (isValid(x + h.x(), y + h.y(), length, board))
                 num++;
         }
@@ -41,33 +38,21 @@ public class Main {
         return num;
     }
 
-    static boolean Warnsdorff(int nextX[], int [][] board, int length, int yy, int xx, int counter, int [][] table){
+    static void printBoard(int[][] board, int i) {
 
-        int min = N+1;
-        int n;
-        int i = 0, iter = 0;
-        int tab[][] = new int[8][2];
-        int x = xx;
-        int y = yy;
-
-        for(int j = 0; j < 8; j++) {
-            tab[j][0] = -1;
-            tab[j][1] = -1;
-        }
-
-        for(HopCoordinates h : HopCoordinates.values()) {
-            if (isValid(x + h.x(), y + h.y(), length, board)) {
-                n = getNumber(x + h.x(), y + h.y(), board, length);
-                tab[iter][0] = n;
-                tab[iter][1] = length*(y + h.y()) + x + h.x();
-                iter++;
-                if(min > n) min = n;
+        for (int j = 0; j < i; j++) {
+            for (int k = 0; k < i; k++) {
+                System.out.print(board[j][k] + " ");
             }
+            System.out.println();
         }
+        System.out.println();
+    }
 
-        for(int j = 0; j < iter; j++){
-            for(int k = 0; k < iter; k++){
-                if(tab[j][0] < tab[k][0] || tab[k][0] == -1) {
+    static void sortTable(int[][] tab, int iter) {
+        for (int j = 0; j < iter; j++) {
+            for (int k = 0; k < iter; k++) {
+                if (tab[j][0] < tab[k][0] || tab[k][0] == -1) {
                     int temp = tab[k][0];
                     tab[k][0] = tab[j][0];
                     tab[j][0] = temp;
@@ -77,54 +62,78 @@ public class Main {
                 }
             }
         }
+    }
 
-        for(int j = 0; j < 8; j++) {
+    static boolean Warnsdorff(int[][] board, int length, int yy, int xx, int counter, int[][] table) {
+
+        //int min = N + 1;
+        int n;
+        int iter = 0;
+        int tab[][] = new int[8][2];
+
+        //set up local table
+        for (int j = 0; j < 8; j++) {
+            tab[j][0] = -1;
+            tab[j][1] = -1;
+        }
+
+        //for every possible and valid move of knight get coordinates and
+        //number of possible hops from that square
+        for (HopCoordinates h : HopCoordinates.values()) {
+            if (isValid(xx + h.x(), yy + h.y(), length, board)) {
+                n = getNumber(xx + h.x(), yy + h.y(), board, length);
+                tab[iter][0] = n;
+                tab[iter][1] = length * (yy + h.y()) + xx + h.x();
+                iter++;
+                // if (min > n) min = n;
+            }
+        }
+
+        //sort table by no. of possible hops and insert to main table for every square of board.
+        //insert only information about coordinates of next hops
+        sortTable(tab, iter);
+        for (int j = 0; j < 8; j++) {
             table[length * yy + xx][j] = tab[j][1];
         }
 
-        if (min == N + 1) return false;
-
-        while(table[length*yy+xx][0] != -1) {
-
-            int yTable = table[length*yy+xx][0] / length;
-            int xTable = table[length*yy+xx][0] % length;
+        //Using depth first search with recursive call of  Warnsdorff{} function,
+        //which returns true when successfully reached last square on board, else returns false and
+        //have to remove first hop coordinates from array and try another one.
+        while (table[length * yy + xx][0] != -1) {
+            int yTable = table[length * yy + xx][0] / length;
+            int xTable = table[length * yy + xx][0] % length;
 
             if (counter == length * length) {
                 board[yTable][xTable] = counter;
                 return true;
             }
 
+            //To stop looking for solution after more than 2 million attempts.
+            C++;
+            if (C > 2000000) return false;
+
             board[yTable][xTable] = counter;
 
-            if (Warnsdorff(nextX, board, length, yTable, xTable, counter + 1, table))
+            if (Warnsdorff(board, length, yTable, xTable, counter + 1, table))
                 return true;
             else {
                 removeHead(table, length, yy, xx);
                 board[yTable][xTable] = -1;
             }
         }
-
-        for(int j = 0; j < length; j++){
-            for(int k = 0; k < length; k++){
-                System.out.print(board[j][k] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-
+        //printBoard(board, length);
         return false;
     }
 
-    static void removeHead(int [][] table, int length, int yy, int xx){
-        for(int i = 0; i < 7; i++){
-            table[length*yy+xx][i] = table[length*yy+xx][i+1];
+    static void removeHead(int[][] table, int length, int yy, int xx) {
+        for (int i = 0; i < 7; i++) {
+            table[length * yy + xx][i] = table[length * yy + xx][i + 1];
         }
-        table[length*yy+xx][7] = -1;
+        table[length * yy + xx][7] = -1;
     }
 
-    static void findRoute(int i) throws Exception{
+    static boolean findRoute(int i) {
 
-        int number = 0;
         int counter = 1;
         int next[] = new int[2];
 
@@ -134,41 +143,71 @@ public class Main {
 
         int board[][] = new int[i][i];
 
-        newBoard(board,i);
+        newBoard(board, i, i);
 
         board[randomY][randomX] = 1;
         next[0] = randomX;
         next[1] = randomY;
 
-        int table[][] = new int [i*i][8];
-        for(int j = 0; j < i*i; j++){
-            for(int k = 0; k < 8; k++)
-                table[j][k] = -1;
+        int table[][] = new int[i * i][8];
+
+        newBoard(table, i * i, 8);
+
+        if (Warnsdorff(board, i, next[1], next[0], counter + 1, table)) {
+            //printBoard(board, i);
+            return true;
+        } else {
+            //printBoard(board, i);
+            return false;
         }
-
-        Warnsdorff(next, board, i, next[1], next[0], counter+1, table);
-
-        for(int j = 0; j < i; j++){
-            for(int k = 0; k < i; k++){
-                System.out.print(board[j][k] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-
-      /*  if(counter == i*i) return true;
-        else return false;*/
     }
 
-    public static void main(String[] args) throws Exception{
+    static void testScenario(int in) {
+
+        int notFound = 0, firstFound = 0, notFirstFound = 0;
+
+        System.out.print("\n\nTesting Knights tour on " + in + "x" + in + " chess board with random starting position..\n");
+
+        for (int i = 0; i < 20; i++) {
+            if (!findRoute(in))
+                notFound++;
+            else {
+                if (C == in * in)
+                    firstFound++;
+                if (C > in * in && C < 2000000)
+                    notFirstFound++;
+            }
+            C = 2;
+        }
+        System.out.print("Solution was found on the first try " + firstFound + " times, \n");
+        System.out.print("solution was found but not on the first try " + notFirstFound + " times and \n");
+        System.out.print("solution was not found  " + notFound + " times out of 20.\n");
+    }
+
+    public static void main(String[] args) throws Exception {
 
        /* System.out.print("Zadaj dlzku hrany\n");
         Scanner s;
         s = new Scanner(System.in);
-        int in = s.nextInt();
-*/
-        for(int i = 0; i < 1; i++) {
-            findRoute(5);
-        }
+        int in = s.nextInt();*/
+
+        testScenario(5);
+        testScenario(6);
+        testScenario(7);
+        testScenario(8);
+        testScenario(10);
+        testScenario(14);
+        testScenario(20);
+
+
+//        for (int i = 0; i < 20; i++) {
+//            if(findRoute(in) == false) System.out.print("Solution was not found.\n");
+//            else {
+//                if (C == in * in) System.out.print("Successfully found on the first try.\n");
+//                if (C > in * in && C < 1999999) System.out.print("Found, but not on the first try.\n");
+//            }
+//            System.out.print(C + "\n");
+//            C = 2;
+//        }
     }
 }
