@@ -1,4 +1,4 @@
-# UI Zadanie1
+﻿# UI Zadanie1
 
 ## Zadanie: Eulerov kôň g)
 
@@ -55,7 +55,7 @@ Testovnie správnosti riešenia som preveroval iba pozorovaním výslednej šach
 Tento spôsob testovania som vykonával na šachovniciach rozmerov 5x5, 6x6, 7x7 a 8x8. 
 Testovanie funkcionality som prevádzal aj na šachovniciach väčších veľkostí (10x10, 14x14, 20x20) a to pomocou funkcie testScenario(), ktorá pre zadanú vstupnú veľkosť šachovnice vykoná testovanie pre 20 náhodných počiatočných súradníc a vypíše koľko z nich sa podarilo nájsť na prvý pokus, teda pomocou Warnsdorffovej heuristiky, koľko sa podarilo nájsť využitím rekurzie a koľkokrát sa výsledný prechod nepodaril nájsť v určenom limite.
 
-**Výstup testovania v konzole:**
+**Výstup vlastného testovania v konzole:**
 
 Testing Knights tour on 5x5 chess board with random starting position..
 Solution was found on the first try 7 times, 
@@ -97,3 +97,37 @@ Testing Knights tour on 20x20 chess board with random starting position..
 Solution was found on the first try 20 times, 
 solution was found but not on the first try 0 times and 
 solution was not found  0 times out of 20.
+
+**Štatistika vlastného testovania v konzole:**
+
+Pre šachovnice párnych rozmerov našiel program správne riešenie v každom prípade. 
+V každom z týchto prípadov našiel riešenie na prvý pokus teda pomocou Warnsdorffej heuristiky okrem prípadu šachovnice rozmerov 8x8.
+V tomto prípade našiel riešenie na prvý pokus v 92 zo 100 pokusov.
+
+5x100 pokusov pre jednotlivé rozmery šachovníc:
+
+5x5:
+28, 32, 27, 21, 24 - prvý pokus 26,4%
+36, 24, 23, 31, 32 - najdené nie na prvý pokus 29,2%
+36, 44, 50, 48, 44 - nenájdené riešenie 44,4%
+
+6x6:
+100, 100, 100, 100, 100 - prvy pokus 100%
+0, 0, 0, 0, 0 - najdené nie na prvý pokus 0%
+0, 0, 0, 0, 0 - nenájdené riešenie 0%
+
+7x7:
+43, 37, 43, 40, 50 - prvy pokus 42,6%
+8, 6, 3, 4, 7 - najdené nie na prvý pokus 5,6%
+49, 57, 54, 56, 43 - nenájdené riešenie 51,8 
+
+**Používateľská príručka**
+
+Na vstupe je potrebné zadať 2 čísla:
+
+Prvá otázka sa týka rozmeru šachovnice, ktorý je buď potrebný zadať ako jedno celé číslo (väčšie ako 4) alebo zadať číslo 0.
+V prípade, že zadáte ako prvé čislo 0, vygeneruje sa pre každý skúšobný rozmer (5,6,7,8,10,14,20) náhodných 20 prípadov, ktoré program vyrieši.
+V prípade že zadáte vlastné číslo vygeneruje sa 20 náhodných prípadov šachovníc pre daný rozmer.
+
+Druhá otázka sa pýta na potrebu výpisu riešení šachovníc. Ak si chcete napríklad skontrolovať správnosť riešenia zadajte nízky rozmer šachovnice a číslo 1 pre výpis výsledku hľadania cesty.
+Ak zvolíte číslo 0, výpis bude obsahovať iba informáciu o počte nájdených resp. nenájdených riešení, alebo koľko riešení bolo nájdený počas prvého pokusu. 

@@ -1,6 +1,7 @@
 package pack;
 
 import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
 
@@ -132,7 +133,7 @@ public class Main {
         table[length * yy + xx][7] = -1;
     }
 
-    static boolean findRoute(int i) {
+    static boolean findRoute(int i, int printOut) {
 
         int counter = 1;
         int next[] = new int[2];
@@ -154,22 +155,22 @@ public class Main {
         newBoard(table, i * i, 8);
 
         if (Warnsdorff(board, i, next[1], next[0], counter + 1, table)) {
-            //printBoard(board, i);
+            if(printOut == 1) printBoard(board, i);
             return true;
         } else {
-            //printBoard(board, i);
+            if(printOut == 1) printBoard(board, i);
             return false;
         }
     }
 
-    static void testScenario(int in) {
+    static void testScenario(int in, int printOut) {
 
         int notFound = 0, firstFound = 0, notFirstFound = 0;
 
         System.out.print("\n\nTesting Knights tour on " + in + "x" + in + " chess board with random starting position..\n");
 
         for (int i = 0; i < 20; i++) {
-            if (!findRoute(in))
+            if (!findRoute(in, printOut))
                 notFound++;
             else {
                 if (C == in * in)
@@ -186,19 +187,23 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-       /* System.out.print("Zadaj dlzku hrany\n");
-        Scanner s;
-        s = new Scanner(System.in);
-        int in = s.nextInt();*/
+        System.out.print("Zadaj dlzku hrany (zadaj 0 pre prednastavene testovnianie):\n");
+        Scanner s = new Scanner(System.in);
+        int in = s.nextInt();
+        System.out.print("Ak si prjete vypisat sachovnicu zadajte 1 inak 0:\n");
+        Scanner d = new Scanner(System.in);
+        int printOut = d.nextInt();
 
-        testScenario(5);
-        testScenario(6);
-        testScenario(7);
-        testScenario(8);
-        testScenario(10);
-        testScenario(14);
-        testScenario(20);
-
+        if (in == 0) {
+            testScenario(5, printOut);
+            testScenario(6, printOut);
+            testScenario(7, printOut);
+            testScenario(8, printOut);
+            testScenario(10, printOut);
+            testScenario(14, printOut);
+            testScenario(20, printOut);
+        }
+        else testScenario(in, printOut);
 
 //        for (int i = 0; i < 20; i++) {
 //            if(findRoute(in) == false) System.out.print("Solution was not found.\n");
